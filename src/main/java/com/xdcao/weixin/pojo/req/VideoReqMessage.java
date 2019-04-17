@@ -1,4 +1,4 @@
-package com.xdcao.weixin.pojo;
+package com.xdcao.weixin.pojo.req;
 
 /**
  * @Author: buku.ch
@@ -6,7 +6,7 @@ package com.xdcao.weixin.pojo;
  */
 
 
-public class VideoMessage extends BaseMessage {
+public class VideoReqMessage extends BaseReqMessage {
 
     private String MediaId; // 视频消息媒体 id，可以调用多媒体文件下载接口拉取数据
     private String ThumbMediaId; // 视频消息缩略图的媒体 id，可以调用多媒体文件下载接口拉取数据

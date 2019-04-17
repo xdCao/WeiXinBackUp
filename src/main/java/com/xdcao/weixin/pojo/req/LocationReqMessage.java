@@ -1,4 +1,4 @@
-package com.xdcao.weixin.pojo;
+package com.xdcao.weixin.pojo.req;
 
 /**
  * @Author: buku.ch
@@ -6,7 +6,7 @@ package com.xdcao.weixin.pojo;
  */
 
 
-public class LocationMessage extends BaseMessage{
+public class LocationReqMessage extends BaseReqMessage {
 
     // 地理位置维度
     private String Location_X;

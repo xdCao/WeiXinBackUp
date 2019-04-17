@@ -1,4 +1,4 @@
-package com.xdcao.weixin.pojo;
+package com.xdcao.weixin.pojo.req;
 
 /**
  * @Author: buku.ch
@@ -6,7 +6,7 @@ package com.xdcao.weixin.pojo;
  */
 
 
-public class PicMessage extends BaseMessage{
+public class PicReqMessage extends BaseReqMessage {
 
     // 图片链接
     private String PicUrl;

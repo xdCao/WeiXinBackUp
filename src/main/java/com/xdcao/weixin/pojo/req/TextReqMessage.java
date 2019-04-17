@@ -1,4 +1,4 @@
-package com.xdcao.weixin.pojo;
+package com.xdcao.weixin.pojo.req;
 
 /**
  * @Author: buku.ch
@@ -6,7 +6,7 @@ package com.xdcao.weixin.pojo;
  */
 
 
-public class TextMessage extends BaseMessage{
+public class TextReqMessage extends BaseReqMessage {
 
     // 消息内容
     private String Content;

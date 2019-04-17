@@ -1,4 +1,4 @@
-package com.xdcao.weixin.pojo;
+package com.xdcao.weixin.pojo.req;
 
 /**
  * @Author: buku.ch
@@ -6,7 +6,7 @@ package com.xdcao.weixin.pojo;
  */
 
 
-public class VoiceMessage extends BaseMessage{
+public class VoiceReqMessage extends BaseReqMessage {
 
     // 媒体 ID
     private String MediaId;

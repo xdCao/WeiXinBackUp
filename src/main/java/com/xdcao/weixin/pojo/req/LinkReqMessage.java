@@ -1,4 +1,4 @@
-package com.xdcao.weixin.pojo;
+package com.xdcao.weixin.pojo.req;
 
 /**
  * @Author: buku.ch
@@ -6,7 +6,7 @@ package com.xdcao.weixin.pojo;
  */
 
 
-public class LinkMessage extends BaseMessage {
+public class LinkReqMessage extends BaseReqMessage {
 
     // 消息标题
     private String Title;

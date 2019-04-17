@@ -52,19 +52,19 @@ public class WeixinApplication {
     }
 
     @PostMapping(value = "/wx")
+    @ResponseBody
     // post 方法用于接收微信服务端消息
-    public void doPost(HttpServletRequest request, HttpServletResponse response) {
+    public String doPost(HttpServletRequest request, HttpServletResponse response) {
         try {
             Map<String, String> stringStringMap = MessageUtil.parseXml(request);
             String jsonMsg = gson.toJson(stringStringMap);
             LOGGER.info("接收到用户的消息: "+ jsonMsg);
-            String msgType = stringStringMap.get(MessageUtil.MSG_TYPE);
-            if (msgType == null) {
-                LOGGER.error("无法解析消息类型 {}", jsonMsg);
-            }
-            msgDispatcher.dispatchMsg(msgType);
+
+            String respMsg = msgDispatcher.dispatchMsg(stringStringMap);
+            return respMsg;
         } catch (Exception e) {
             LOGGER.error("解析微信xml消息失败", e);
+            return "";
         }
     }
 
