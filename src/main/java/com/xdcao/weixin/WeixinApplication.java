@@ -1,22 +1,25 @@
 package com.xdcao.weixin;
 
 import com.google.gson.Gson;
+import com.xdcao.weixin.utils.MessageUtil;
+import com.xdcao.weixin.utils.SignUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
 import java.util.Map;
 
 @SpringBootApplication
 @Controller
+@EnableScheduling
 public class WeixinApplication {
 
     @Bean

@@ -1,4 +1,4 @@
-package com.xdcao.weixin;
+package com.xdcao.weixin.utils;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.core.util.QuickWriter;
