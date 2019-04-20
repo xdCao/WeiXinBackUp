@@ -8,13 +8,13 @@ package com.xdcao.weixin.pojo.resp;
 
 public class PicRespMessage extends BaseRespMessage {
 
-    private Picture picture;
+    private Image Image;
 
-    public Picture getPicture() {
-        return picture;
+    public Image getImage() {
+        return Image;
     }
 
-    public void setPicture(Picture picture) {
-        this.picture = picture;
+    public void setImage(Image image) {
+        this.Image = image;
     }
 }

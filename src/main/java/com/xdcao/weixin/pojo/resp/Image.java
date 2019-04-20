@@ -6,7 +6,7 @@ package com.xdcao.weixin.pojo.resp;
  */
 
 
-public class Picture {
+public class Image {
 
     private String MediaId;
 

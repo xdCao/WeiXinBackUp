@@ -99,7 +99,7 @@ public class MsgDispatcher {
             imgMsg.setCreateTime(new Date().getTime());
             imgMsg.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_Image);
 
-            Picture picture = new Picture();
+            Image image = new Image();
             String filepath="/root/weixinPic/mmexport1517112306686.jpg";
             Map<String, String> textMap = new HashMap<String, String>();
             textMap.put("name", "testname");
@@ -109,8 +109,8 @@ public class MsgDispatcher {
             System.out.println(mediaIdStr);
             MediaStr mediaStr = gson.fromJson(mediaIdStr, MediaStr.class);
             LOGGER.info("获取mediaStr: {}",mediaIdStr);
-            picture.setMediaId(mediaStr.getMediaId());
-            imgMsg.setPicture(picture);
+            image.setMediaId(mediaStr.getMediaId());
+            imgMsg.setImage(image);
             return MessageUtil.imageMessageToXml(imgMsg);
 
         }
