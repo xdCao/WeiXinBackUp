@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +25,10 @@ import java.util.Map;
 @EnableScheduling
 public class WeixinApplication {
 
+    @Bean
+    public RedisTemplate<String,String> redisTemplate(RedisConnectionFactory factory) {
+        return new StringRedisTemplate(factory);
+    }
     @Bean
     public Gson gson() {
         return new Gson();

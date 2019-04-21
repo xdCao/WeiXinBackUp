@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 import com.xdcao.weixin.pojo.AccessToken;
 import com.xdcao.weixin.pojo.TokenBean;
 import com.xdcao.weixin.utils.HttpUtil;
-import jdk.nashorn.internal.runtime.GlobalConstants;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -26,7 +23,7 @@ import java.util.Map;
  */
 
 @Service
-public class TokenService implements InitializingBean, Job {
+public class TokenService implements InitializingBean {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TokenService.class);
 
@@ -65,8 +62,4 @@ public class TokenService implements InitializingBean, Job {
         getToken_getTicket();
     }
 
-    @Override
-    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        getToken_getTicket();
-    }
 }

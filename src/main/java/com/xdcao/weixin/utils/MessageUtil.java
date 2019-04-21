@@ -132,6 +132,7 @@ public class MessageUtil {
      * 事件类型：LOCATION(上报地理位置事件)
      */
     public static final String EVENT_TYPE_SCAN = "SCAN";
+    public static final String EVENT_TYPE = "Event";
 
     /**
      * @Description: 解析微信发来的请求（XML）

@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.xdcao.weixin.pojo.AccessToken;
 import com.xdcao.weixin.pojo.ClickButton;
 import com.xdcao.weixin.pojo.TokenBean;
 import com.xdcao.weixin.pojo.ViewButton;
@@ -12,11 +14,14 @@ import com.xdcao.weixin.utils.HttpUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.xdcao.weixin.MsgDispatcher.KEFU_API_CREATE;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -27,6 +32,19 @@ public class WeixinApplicationTests {
 
     @Autowired
     private TokenBean tokenBean;
+
+
+    @Value("${appID}")
+    private String appID;
+
+    @Value("${appsecret}")
+    private String appsecret;
+
+    @Value("${tokenUrl}")
+    private String tokenUrl;
+
+    @Autowired
+    private Gson gson;
 
     @Test
     public void contextLoads() {
@@ -88,6 +106,28 @@ public class WeixinApplicationTests {
         }catch(Exception e){
             System.out.println("请求错误！");
         }
+    }
+
+    @Test
+    public void kefuCreate() throws Exception {
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("grant_type", "client_credential");
+        params.put("appid", appID);
+        params.put("secret",appsecret);
+
+        String jsToken = HttpUtil.sendGet(tokenUrl, params);
+        AccessToken accessToken = gson.fromJson(jsToken, AccessToken.class);
+        String url = KEFU_API_CREATE+accessToken;
+
+        Map<String,String> paramsCrea = new HashMap<>();
+        paramsCrea.put("kf_account", "oiUNl5zMP0Fa4-2bfcI8PS4c0FdI");
+        paramsCrea.put("nickname", "小咪的老公");
+        paramsCrea.put("password", "705083979123");
+
+        String sendPost = HttpUtil.sendPost(url, paramsCrea);
+        System.out.println(sendPost);
+
     }
 
 }

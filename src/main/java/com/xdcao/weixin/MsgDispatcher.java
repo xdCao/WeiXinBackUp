@@ -2,13 +2,17 @@ package com.xdcao.weixin;
 
 import com.google.gson.Gson;
 import com.xdcao.weixin.pojo.MediaStr;
+import com.xdcao.weixin.pojo.TokenBean;
 import com.xdcao.weixin.pojo.resp.*;
+import com.xdcao.weixin.utils.HttpUtil;
 import com.xdcao.weixin.utils.MessageUtil;
+import com.xdcao.weixin.utils.RedisUtil;
 import com.xdcao.weixin.utils.UploadService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -25,6 +29,8 @@ public class MsgDispatcher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MsgDispatcher.class);
 
+    public static final String KEFU_API_CREATE = "https://api.weixin.qq.com/customservice/kfaccount/add?access_token=";
+
     @Autowired
     private EventDispatcher eventDispatcher;
 
@@ -33,6 +39,12 @@ public class MsgDispatcher {
 
     @Autowired
     private Gson gson;
+
+    @Autowired
+    private RedisTemplate<String,String> redisTemplate;
+
+    @Autowired
+    private TokenBean tokenBean;
 
     public String dispatchMsg(Map<String, String> msgMap) {
         String msgType = msgMap.get(MessageUtil.MSG_TYPE);
@@ -66,65 +78,100 @@ public class MsgDispatcher {
     }
 
     private String processTextMsg(Map<String, String> msgMap) {
-        String openId = msgMap.get(MessageUtil.FROM_USER_NAME); //用户 openId
+        String fromUserId = msgMap.get(MessageUtil.FROM_USER_NAME); //用户 openId
         String mpId = msgMap.get(MessageUtil.TO_USER_NAME);   //公众号原始 ID
 
         String reqContent = msgMap.get(MessageUtil.CONTENT);
         if (reqContent.contains(KeyWords.HISTORY)) {
-            // 返回历史文章
-            NewsRespMessage newsMsg=new NewsRespMessage();
-            newsMsg.setToUserName(openId);
-            newsMsg.setFromUserName(mpId);
-            newsMsg.setCreateTime(new Date().getTime());
-            newsMsg.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_NEWS);
-
-            System.out.println("==============这是图片消息！");
-            Article article=new Article();
-            article.setDescription("这是图文消息 1"); //图文消息的描述
-            article.setPicUrl("http://res.cuiyongzhi.com/2016/03/201603086749_6850.png"); //图文消息图片地址
-            article.setTitle("图文消息 1");  //图文消息标题
-            article.setUrl("http://www.cuiyongzhi.com");  //图文 url 链接
-            List<Article> list=new ArrayList<Article>();
-            list.add(article);     //这里发送的是单图文，如果需要发送多图文则在这里 list 中加入多个 Article 即可！
-            newsMsg.setArticleCount(list.size());
-            newsMsg.setArticles(list);
-            return MessageUtil.newsMessageToXml(newsMsg);
-
+            return returnHisArticles(fromUserId, mpId);
         }
 
         if (reqContent.contains(KeyWords.PIC)) {
-            PicRespMessage imgMsg = new PicRespMessage();
-            imgMsg.setToUserName(openId);
-            imgMsg.setFromUserName(mpId);
-            imgMsg.setCreateTime(new Date().getTime());
-            imgMsg.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_Image);
-
-            Image image = new Image();
-            String filepath="/root/weixinPic/mmexport1517112306686.jpg";
-            Map<String, String> textMap = new HashMap<String, String>();
-            textMap.put("name", "testname");
-            Map<String, String> fileMap = new HashMap<String, String>();
-            fileMap.put("userfile", filepath);
-            String mediaIdStr = uploadService.formUpload(textMap, fileMap);
-            System.out.println(mediaIdStr);
-            MediaStr mediaStr = gson.fromJson(mediaIdStr, MediaStr.class);
-            LOGGER.info("获取mediaStr: {}",mediaIdStr);
-            image.setMediaId(mediaStr.getMediaId());
-            imgMsg.setImage(image);
-            return MessageUtil.imageMessageToXml(imgMsg);
-
+            return returnPic(fromUserId, mpId);
         }
 
-        //普通文本消息
+        Set<String> members = redisTemplate.opsForSet().members(RedisUtil.USER_KEY);
+//        members.forEach(LOGGER::info);
+
+        if (members == null || members.isEmpty()) {
+            TextRespMessage txtMsg = new TextRespMessage();
+            txtMsg.setToUserName(fromUserId);
+            txtMsg.setFromUserName(mpId);
+            txtMsg.setCreateTime(new Date().getTime());
+            txtMsg.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_TEXT);
+            txtMsg.setContent("目前群聊里没有其他成员哦");
+            return MessageUtil.textMessageToXml(txtMsg);
+        }
+
+        for (String member : members) {
+            if (!Objects.equals(fromUserId, member)) {
+                //普通文本消息
+                TextRespMessage txtMsg = new TextRespMessage();
+                txtMsg.setToUserName(member);
+                txtMsg.setFromUserName(mpId);
+                txtMsg.setCreateTime(new Date().getTime());
+                txtMsg.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_TEXT);
+
+                txtMsg.setContent(reqContent);
+                return MessageUtil.textMessageToXml(txtMsg);
+            }
+        }
+
         TextRespMessage txtMsg = new TextRespMessage();
-        txtMsg.setToUserName(openId);
+        txtMsg.setToUserName(fromUserId);
         txtMsg.setFromUserName(mpId);
         txtMsg.setCreateTime(new Date().getTime());
         txtMsg.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_TEXT);
-
-        txtMsg.setContent("你是小咪~~~~~~~~~~");
+        txtMsg.setContent("目前群聊里没有其他成员哦");
         return MessageUtil.textMessageToXml(txtMsg);
 
+
+
     }
+
+    private String returnPic(String openId, String mpId) {
+        PicRespMessage imgMsg = new PicRespMessage();
+        imgMsg.setToUserName(openId);
+        imgMsg.setFromUserName(mpId);
+        imgMsg.setCreateTime(new Date().getTime());
+        imgMsg.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_Image);
+
+        Image image = new Image();
+        String filepath="/root/weixinPic/mmexport1517112306686.jpg";
+        Map<String, String> textMap = new HashMap<String, String>();
+        textMap.put("name", "testname");
+        Map<String, String> fileMap = new HashMap<String, String>();
+        fileMap.put("userfile", filepath);
+        String mediaIdStr = uploadService.formUpload(textMap, fileMap);
+        System.out.println(mediaIdStr);
+        MediaStr mediaStr = gson.fromJson(mediaIdStr, MediaStr.class);
+        LOGGER.info("获取mediaStr: {}",mediaIdStr);
+        image.setMediaId(mediaStr.getMediaId());
+        imgMsg.setImage(image);
+        return MessageUtil.imageMessageToXml(imgMsg);
+    }
+
+    private String returnHisArticles(String openId, String mpId) {
+        // 返回历史文章
+        NewsRespMessage newsMsg=new NewsRespMessage();
+        newsMsg.setToUserName(openId);
+        newsMsg.setFromUserName(mpId);
+        newsMsg.setCreateTime(new Date().getTime());
+        newsMsg.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_NEWS);
+
+        System.out.println("==============这是图片消息！");
+        Article article=new Article();
+        article.setDescription("这是图文消息 1"); //图文消息的描述
+        article.setPicUrl("http://res.cuiyongzhi.com/2016/03/201603086749_6850.png"); //图文消息图片地址
+        article.setTitle("图文消息 1");  //图文消息标题
+        article.setUrl("http://www.cuiyongzhi.com");  //图文 url 链接
+        List<Article> list=new ArrayList<Article>();
+        list.add(article);     //这里发送的是单图文，如果需要发送多图文则在这里 list 中加入多个 Article 即可！
+        newsMsg.setArticleCount(list.size());
+        newsMsg.setArticles(list);
+        return MessageUtil.newsMessageToXml(newsMsg);
+    }
+
+
 
 }
