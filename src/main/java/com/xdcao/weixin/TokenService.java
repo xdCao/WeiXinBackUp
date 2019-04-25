@@ -42,7 +42,7 @@ public class TokenService implements InitializingBean {
     @Autowired
     private TokenBean tokenBean;
 
-    @Scheduled(fixedRate = 3600)
+    @Scheduled(fixedRate = 3600000)
     public void getToken_getTicket() {
         Map<String, String> params = new HashMap<String, String>();
         params.put("grant_type", "client_credential");
@@ -52,6 +52,7 @@ public class TokenService implements InitializingBean {
             String jsToken = HttpUtil.sendGet(tokenUrl, params);
             AccessToken accessToken = gson.fromJson(jsToken, AccessToken.class);
             tokenBean.setAccessToken(accessToken);
+            LOGGER.info("获取access_token: {}",accessToken.getAccessToken());
         } catch (Exception e) {
             LOGGER.error("获取accessToken失败", e);
         }

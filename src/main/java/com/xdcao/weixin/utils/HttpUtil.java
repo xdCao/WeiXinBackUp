@@ -237,6 +237,7 @@ public class HttpUtil {
             query.append(String.format("%s=%s&", key, params.get(key)));
         }
         return reqUrl + "?" + query.toString();
+
     }
 
 

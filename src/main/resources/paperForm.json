@@ -1,0 +1,42 @@
+{
+  "name":"测试用的试卷",
+  "questionDTOs":[
+    {
+      "content":"题目1",
+      "muliti":1,
+      "score":50,
+      "indexNum":1,
+      "optionDTOS":[
+        {
+          "content":"选项1",
+          "correct":true,
+          "indexNum":1
+        },
+        {
+          "content":"选项2",
+          "correct":false,
+          "indexNum":2
+        }
+      ]
+    },
+    {
+      "content":"题目2",
+      "muliti":1,
+      "score":50,
+      "indexNum":2,
+      "optionDTOS":[
+        {
+          "content":"选项1",
+          "correct":true,
+          "indexNum":1
+        },
+        {
+          "content":"选项2",
+          "correct":false,
+          "indexNum":2
+        }
+      ]
+    }
+  ]
+}
+
