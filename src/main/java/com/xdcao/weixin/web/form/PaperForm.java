@@ -1,4 +1,4 @@
-package com.xdcao.weixin.web;
+package com.xdcao.weixin.web.form;
 
 import com.xdcao.weixin.web.dto.QuestionDTO;
 

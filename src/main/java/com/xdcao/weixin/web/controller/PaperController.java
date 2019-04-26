@@ -1,8 +1,10 @@
-package com.xdcao.weixin.web;
+package com.xdcao.weixin.web.controller;
 
 import com.google.gson.Gson;
+import com.xdcao.weixin.base.ApiResponse;
 import com.xdcao.weixin.base.ServiceResult;
 import com.xdcao.weixin.service.IPaperService;
+import com.xdcao.weixin.web.form.PaperForm;
 import com.xdcao.weixin.web.dto.OptionDTO;
 import com.xdcao.weixin.web.dto.QuestionDTO;
 import org.slf4j.Logger;

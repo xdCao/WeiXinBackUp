@@ -1,7 +1,7 @@
 package com.xdcao.weixin.service;
 
 import com.xdcao.weixin.base.ServiceResult;
-import com.xdcao.weixin.web.PaperForm;
+import com.xdcao.weixin.web.form.PaperForm;
 
 /**
  * @Author: buku.ch

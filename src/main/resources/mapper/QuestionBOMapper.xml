@@ -102,7 +102,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.xdcao.weixin.bo.QuestionBO" useGeneratedKeys="true">
+  <insert id="insert" parameterType="com.xdcao.weixin.bo.QuestionBO">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>

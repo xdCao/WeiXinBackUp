@@ -1,13 +1,13 @@
 package com.xdcao.weixin.service;
 
 import com.xdcao.weixin.base.ServiceResult;
-import com.xdcao.weixin.bo.OptionBO;
+import com.xdcao.weixin.bo.AnswerBO;
 import com.xdcao.weixin.bo.PaperBO;
 import com.xdcao.weixin.bo.QuestionBO;
-import com.xdcao.weixin.dao.OptionBOMapper;
+import com.xdcao.weixin.dao.AnswerBOMapper;
 import com.xdcao.weixin.dao.PaperBOMapper;
 import com.xdcao.weixin.dao.QuestionBOMapper;
-import com.xdcao.weixin.web.PaperForm;
+import com.xdcao.weixin.web.form.PaperForm;
 import com.xdcao.weixin.web.dto.OptionDTO;
 import com.xdcao.weixin.web.dto.QuestionDTO;
 import org.modelmapper.ModelMapper;
@@ -33,7 +33,7 @@ public class PaperServiceImpl implements IPaperService {
     private QuestionBOMapper questionBOMapper;
 
     @Autowired
-    private OptionBOMapper optionBOMapper;
+    private AnswerBOMapper answerBOMapper;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -64,13 +64,13 @@ public class PaperServiceImpl implements IPaperService {
 
             List<OptionDTO> optionDTOS = questionDTO.getOptionDTOS();
             optionDTOS.forEach(optionDTO -> {
-                OptionBO optionBO = new OptionBO();
-                modelMapper.map(optionDTO, optionBO);
-                optionBO.setPaperId(paperBO.getId());
-                optionBO.setQuestionId(questionBO.getId());
-                optionBO.setCreateTime(now);
-                optionBO.setLastUpdateTime(now);
-                optionBOMapper.insert(optionBO);
+                AnswerBO answerBO = new AnswerBO();
+                modelMapper.map(optionDTO, answerBO);
+                answerBO.setPaperId(paperBO.getId());
+                answerBO.setQuestionId(questionBO.getId());
+                answerBO.setCreateTime(now);
+                answerBO.setLastUpdateTime(now);
+                answerBOMapper.insert(answerBO);
             });
 
         });

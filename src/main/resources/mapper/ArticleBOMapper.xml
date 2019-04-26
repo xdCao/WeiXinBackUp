@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.xdcao.weixin.dao.PaperBOMapper">
-  <resultMap id="BaseResultMap" type="com.xdcao.weixin.bo.PaperBO">
+<mapper namespace="com.xdcao.weixin.dao.ArticleBOMapper">
+  <resultMap id="BaseResultMap" type="com.xdcao.weixin.bo.ArticleBO">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="score" jdbcType="INTEGER" property="score" />
+    <result column="viewed_times" jdbcType="INTEGER" property="viewedTimes" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.xdcao.weixin.bo.ArticleBO">
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -66,15 +71,20 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, create_time, update_time
+    id, title, create_time, update_time, score, viewed_times
   </sql>
-  <select id="selectByExample" parameterType="com.xdcao.weixin.bo.PaperBOExample" resultMap="BaseResultMap">
+  <sql id="Blob_Column_List">
+    content
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.xdcao.weixin.bo.ArticleBOExample" resultMap="ResultMapWithBLOBs">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from paper
+    ,
+    <include refid="Blob_Column_List" />
+    from article
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -82,39 +92,57 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.xdcao.weixin.bo.ArticleBOExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from article
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
     select 
     <include refid="Base_Column_List" />
-    from paper
+    ,
+    <include refid="Blob_Column_List" />
+    from article
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from paper
+    delete from article
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.xdcao.weixin.bo.PaperBOExample">
-    delete from paper
+  <delete id="deleteByExample" parameterType="com.xdcao.weixin.bo.ArticleBOExample">
+    delete from article
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.xdcao.weixin.bo.PaperBO">
+  <insert id="insert" parameterType="com.xdcao.weixin.bo.ArticleBO">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into paper (name, create_time, update_time
+    insert into article (title, create_time, update_time, 
+      score, viewed_times, content
       )
-    values (#{name,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+    values (#{title,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{score,jdbcType=INTEGER}, #{viewedTimes,jdbcType=INTEGER}, #{content,jdbcType=LONGVARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.xdcao.weixin.bo.PaperBO">
+  <insert id="insertSelective" parameterType="com.xdcao.weixin.bo.ArticleBO">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into paper
+    insert into article
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="name != null">
-        name,
+      <if test="title != null">
+        title,
       </if>
       <if test="createTime != null">
         create_time,
@@ -122,10 +150,19 @@
       <if test="updateTime != null">
         update_time,
       </if>
+      <if test="score != null">
+        score,
+      </if>
+      <if test="viewedTimes != null">
+        viewed_times,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -133,22 +170,31 @@
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="score != null">
+        #{score,jdbcType=INTEGER},
+      </if>
+      <if test="viewedTimes != null">
+        #{viewedTimes,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.xdcao.weixin.bo.PaperBOExample" resultType="java.lang.Long">
-    select count(*) from paper
+  <select id="countByExample" parameterType="com.xdcao.weixin.bo.ArticleBOExample" resultType="java.lang.Long">
+    select count(*) from article
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update paper
+    update article
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.name != null">
-        name = #{record.name,jdbcType=VARCHAR},
+      <if test="record.title != null">
+        title = #{record.title,jdbcType=VARCHAR},
       </if>
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -156,26 +202,50 @@
       <if test="record.updateTime != null">
         update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.score != null">
+        score = #{record.score,jdbcType=INTEGER},
+      </if>
+      <if test="record.viewedTimes != null">
+        viewed_times = #{record.viewedTimes,jdbcType=INTEGER},
+      </if>
+      <if test="record.content != null">
+        content = #{record.content,jdbcType=LONGVARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByExample" parameterType="map">
-    update paper
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update article
     set id = #{record.id,jdbcType=INTEGER},
-      name = #{record.name,jdbcType=VARCHAR},
+      title = #{record.title,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      score = #{record.score,jdbcType=INTEGER},
+      viewed_times = #{record.viewedTimes,jdbcType=INTEGER},
+      content = #{record.content,jdbcType=LONGVARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.xdcao.weixin.bo.PaperBO">
-    update paper
+  <update id="updateByExample" parameterType="map">
+    update article
+    set id = #{record.id,jdbcType=INTEGER},
+      title = #{record.title,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      score = #{record.score,jdbcType=INTEGER},
+      viewed_times = #{record.viewedTimes,jdbcType=INTEGER}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xdcao.weixin.bo.ArticleBO">
+    update article
     <set>
-      <if test="name != null">
-        name = #{name,jdbcType=VARCHAR},
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -183,14 +253,35 @@
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="score != null">
+        score = #{score,jdbcType=INTEGER},
+      </if>
+      <if test="viewedTimes != null">
+        viewed_times = #{viewedTimes,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.xdcao.weixin.bo.PaperBO">
-    update paper
-    set name = #{name,jdbcType=VARCHAR},
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.xdcao.weixin.bo.ArticleBO">
+    update article
+    set title = #{title,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      score = #{score,jdbcType=INTEGER},
+      viewed_times = #{viewedTimes,jdbcType=INTEGER},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xdcao.weixin.bo.ArticleBO">
+    update article
+    set title = #{title,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      score = #{score,jdbcType=INTEGER},
+      viewed_times = #{viewedTimes,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

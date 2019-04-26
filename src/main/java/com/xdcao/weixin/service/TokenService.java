@@ -1,4 +1,4 @@
-package com.xdcao.weixin;
+package com.xdcao.weixin.service;
 
 import com.google.gson.Gson;
 import com.xdcao.weixin.pojo.AccessToken;
@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import javax.xml.ws.ServiceMode;
 import java.util.HashMap;
 import java.util.Map;
 

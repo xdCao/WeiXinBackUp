@@ -55,12 +55,18 @@
 <!--        <table tableName="question" domainObjectName="QuestionBO">-->
 <!--            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>-->
 <!--        </table>-->
-        <table tableName="answer" domainObjectName="OptionBO">
-            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
-        </table>
+<!--        <table tableName="answer" domainObjectName="AnswerBO">-->
+<!--            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>-->
+<!--        </table>-->
 <!--        <table tableName="user_answer" domainObjectName="UserAnswerBO">-->
 <!--            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>-->
 <!--        </table>-->
+
+
+        <table tableName="article" domainObjectName="ArticleBO">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+
 
 
 

@@ -5,10 +5,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.google.gson.Gson;
-import com.xdcao.weixin.bo.OptionBO;
-import com.xdcao.weixin.dao.OptionBOMapper;
+import com.xdcao.weixin.dao.AnswerBOMapper;
 import com.xdcao.weixin.pojo.AccessToken;
 import com.xdcao.weixin.pojo.TokenBean;
+import com.xdcao.weixin.service.TokenService;
 import com.xdcao.weixin.utils.HttpUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,11 +17,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.xdcao.weixin.MsgDispatcher.KEFU_API_CREATE;
+import static com.xdcao.weixin.web.deprecate.MsgDispatcher.KEFU_API_CREATE;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(value = "application.properties")
@@ -34,7 +33,7 @@ public class WeixinApplicationTests {
     private TokenBean tokenBean;
 
     @Autowired
-    private OptionBOMapper optionBOMapper;
+    private AnswerBOMapper answerBOMapper;
 
 
     @Value("${appID}")
@@ -133,21 +132,5 @@ public class WeixinApplicationTests {
 
     }
 
-    @Test
-    public void testMyBatis() {
-
-        Date date = new Date();
-        OptionBO optionBO = new OptionBO();
-        optionBO.setCreateTime(date);
-        optionBO.setLastUpdateTime(date);
-        optionBO.setQuestionId(1);
-        optionBO.setPaperId(1);
-        optionBO.setContent("11");
-        optionBO.setCorrect(true);
-        optionBO.setIndexNum(1);
-
-        optionBOMapper.insert(optionBO);
-
-    }
 
 }

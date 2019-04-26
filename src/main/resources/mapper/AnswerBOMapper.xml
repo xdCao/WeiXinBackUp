@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.xdcao.weixin.dao.OptionBOMapper">
-  <resultMap id="BaseResultMap" type="com.xdcao.weixin.bo.OptionBO">
+<mapper namespace="com.xdcao.weixin.dao.AnswerBOMapper">
+  <resultMap id="BaseResultMap" type="com.xdcao.weixin.bo.AnswerBO">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="paper_id" jdbcType="INTEGER" property="paperId" />
     <result column="question_id" jdbcType="INTEGER" property="questionId" />
@@ -72,7 +72,7 @@
   <sql id="Base_Column_List">
     id, paper_id, question_id, content, correct, index_num, create_time, last_update_time
   </sql>
-  <select id="selectByExample" parameterType="com.xdcao.weixin.bo.OptionBOExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.xdcao.weixin.bo.AnswerBOExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -96,13 +96,13 @@
     delete from answer
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.xdcao.weixin.bo.OptionBOExample">
+  <delete id="deleteByExample" parameterType="com.xdcao.weixin.bo.AnswerBOExample">
     delete from answer
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.xdcao.weixin.bo.OptionBO">
+  <insert id="insert" parameterType="com.xdcao.weixin.bo.AnswerBO">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
@@ -113,7 +113,7 @@
       #{correct,jdbcType=TINYINT}, #{indexNum,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
       #{lastUpdateTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.xdcao.weixin.bo.OptionBO">
+  <insert id="insertSelective" parameterType="com.xdcao.weixin.bo.AnswerBO">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
@@ -165,7 +165,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.xdcao.weixin.bo.OptionBOExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="com.xdcao.weixin.bo.AnswerBOExample" resultType="java.lang.Long">
     select count(*) from answer
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -217,7 +217,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.xdcao.weixin.bo.OptionBO">
+  <update id="updateByPrimaryKeySelective" parameterType="com.xdcao.weixin.bo.AnswerBO">
     update answer
     <set>
       <if test="paperId != null">
@@ -244,7 +244,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.xdcao.weixin.bo.OptionBO">
+  <update id="updateByPrimaryKey" parameterType="com.xdcao.weixin.bo.AnswerBO">
     update answer
     set paper_id = #{paperId,jdbcType=INTEGER},
       question_id = #{questionId,jdbcType=INTEGER},

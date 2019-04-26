@@ -1,10 +1,9 @@
-package com.xdcao.weixin;
+package com.xdcao.weixin.web.deprecate;
 
 import com.google.gson.Gson;
 import com.xdcao.weixin.pojo.MediaStr;
 import com.xdcao.weixin.pojo.TokenBean;
 import com.xdcao.weixin.pojo.resp.*;
-import com.xdcao.weixin.utils.HttpUtil;
 import com.xdcao.weixin.utils.MessageUtil;
 import com.xdcao.weixin.utils.RedisUtil;
 import com.xdcao.weixin.utils.UploadService;

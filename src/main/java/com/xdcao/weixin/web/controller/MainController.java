@@ -1,8 +1,7 @@
-package com.xdcao.weixin.web;
+package com.xdcao.weixin.web.controller;
 
 import com.google.gson.Gson;
-import com.xdcao.weixin.MsgDispatcher;
-import com.xdcao.weixin.WeixinApplication;
+import com.xdcao.weixin.web.deprecate.MsgDispatcher;
 import com.xdcao.weixin.utils.MessageUtil;
 import com.xdcao.weixin.utils.SignUtil;
 import org.slf4j.Logger;

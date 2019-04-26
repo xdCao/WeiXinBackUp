@@ -27,20 +27,6 @@ import java.util.Map;
 @MapperScan("com.xdcao.weixin.dao")
 public class WeixinApplication {
 
-    @Bean
-    public RedisTemplate<String,String> redisTemplate(RedisConnectionFactory factory) {
-        return new StringRedisTemplate(factory);
-    }
-    @Bean
-    public Gson gson() {
-        return new Gson();
-    }
-
-    @Bean
-    public ModelMapper modelMapper() {
-        return new ModelMapper();
-    }
-
     public static void main(String[] args) {
         SpringApplication.run(WeixinApplication.class, args);
     }

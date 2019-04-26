@@ -1,4 +1,4 @@
-package com.xdcao.weixin;
+package com.xdcao.weixin.web.deprecate;
 
 import com.xdcao.weixin.utils.MessageUtil;
 import org.springframework.beans.factory.annotation.Autowired;

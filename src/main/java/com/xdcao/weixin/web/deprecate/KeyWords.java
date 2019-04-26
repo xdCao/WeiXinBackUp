@@ -1,4 +1,4 @@
-package com.xdcao.weixin;
+package com.xdcao.weixin.web.deprecate;
 
 /**
  * @Author: buku.ch

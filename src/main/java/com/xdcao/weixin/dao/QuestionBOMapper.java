@@ -1,9 +1,8 @@
 package com.xdcao.weixin.dao;
 
-import java.util.List;
-
 import com.xdcao.weixin.bo.QuestionBO;
 import com.xdcao.weixin.bo.QuestionBOExample;
+import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 public interface QuestionBOMapper {

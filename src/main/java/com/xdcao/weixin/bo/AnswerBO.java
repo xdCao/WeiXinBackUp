@@ -1,10 +1,8 @@
 package com.xdcao.weixin.bo;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
 import java.util.Date;
 
-public class OptionBO {
+public class AnswerBO {
     private Integer id;
 
     private Integer paperId;
@@ -13,7 +11,7 @@ public class OptionBO {
 
     private String content;
 
-    private Boolean correct;
+    private Byte correct;
 
     private Integer indexNum;
 
@@ -53,11 +51,11 @@ public class OptionBO {
         this.content = content == null ? null : content.trim();
     }
 
-    public Boolean getCorrect() {
+    public Byte getCorrect() {
         return correct;
     }
 
-    public void setCorrect(Boolean correct) {
+    public void setCorrect(Byte correct) {
         this.correct = correct;
     }
 
