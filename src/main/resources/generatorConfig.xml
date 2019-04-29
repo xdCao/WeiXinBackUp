@@ -67,10 +67,14 @@
 <!--            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>-->
 <!--        </table>-->
 
-        <table tableName="user" domainObjectName="UserBO">
+<!--        <table tableName="user" domainObjectName="UserBO">-->
+<!--            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>-->
+<!--        </table>-->
+
+
+        <table tableName="user_article" domainObjectName="UserArticleBO">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
-
 
 
 

@@ -10,6 +10,7 @@ import com.xdcao.weixin.base.OpenIdUtil;
 import com.xdcao.weixin.dao.AnswerBOMapper;
 import com.xdcao.weixin.pojo.AccessToken;
 import com.xdcao.weixin.pojo.TokenBean;
+import com.xdcao.weixin.service.IExcelService;
 import com.xdcao.weixin.service.TokenService;
 import com.xdcao.weixin.utils.HttpUtil;
 import org.junit.Test;
@@ -36,6 +37,9 @@ public class WeixinApplicationTests {
 
     @Autowired
     private AnswerBOMapper answerBOMapper;
+
+    @Autowired
+    private IExcelService excelService;
 
 
     @Value("${appID}")
@@ -143,6 +147,11 @@ public class WeixinApplicationTests {
         JSONObject jsonObject = JSONObject.parseObject(getopenid);
         String openId=jsonObject.getString("openid");
         System.out.println(" openId : "+ openId);
+    }
+
+    @Test
+    public void testExcel() {
+        excelService.summaryByDepartment();
     }
 
 

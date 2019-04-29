@@ -91,6 +91,7 @@ public class UserController {
     @ResponseBody
     public ApiResponse addScore(@RequestParam("score") Integer score,
                                 @RequestParam("open_id") String openId,
+                                @RequestParam("article_id") Integer articleId,
                                 HttpServletRequest request,
                                 HttpServletResponse resp) {
 
@@ -100,9 +101,9 @@ public class UserController {
             return new ApiResponse(ApiResponse.Status.BAD_REQUEST);
         }
 
-        ServiceResult result = userService.addScore(score,openId);
+        ServiceResult result = userService.addScore(score,openId,articleId);
         if (result.isSuccess()) {
-            return new ApiResponse(ApiResponse.Status.SUCCESS);
+            return new ApiResponse(ApiResponse.Status.SUCCESS,result.getMessage());
         }
 
         return new ApiResponse(ApiResponse.Status.BAD_REQUEST,result.getMessage());

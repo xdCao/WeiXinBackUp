@@ -6,6 +6,7 @@ import com.xdcao.weixin.base.ServiceResult;
 import com.xdcao.weixin.bo.ArticleBO;
 import com.xdcao.weixin.bo.UserBO;
 import com.xdcao.weixin.service.IArticleService;
+import com.xdcao.weixin.service.IExcelService;
 import com.xdcao.weixin.service.IUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.File;
+import java.io.*;
 
 import static com.xdcao.weixin.base.RespUtils.crossover;
 
@@ -48,6 +49,9 @@ public class AdminController {
 
     @Autowired
     private IArticleService articleService;
+
+    @Autowired
+    private IExcelService excelService;
 
     @Value("${admin.name}")
     private String adminName;
@@ -110,7 +114,7 @@ public class AdminController {
                                     HttpSession session,
                                     HttpServletRequest request,
                                     HttpServletResponse resp) {
-//        crossover(request,resp);
+
         ApiResponse response = checkAdminLogin(session);
         if (response != null) {
             return response;
@@ -126,8 +130,6 @@ public class AdminController {
                                      @RequestParam("data") String content,
                                      @RequestParam("title") String title,
                                      HttpServletResponse resp) {
-
-//        crossover(request,resp);
 
         if (content == null || content.isEmpty()) {
             return new ApiResponse(ApiResponse.Status.BAD_REQUEST);
@@ -152,7 +154,6 @@ public class AdminController {
     public ApiResponse uploadPhoto(@RequestParam MultipartFile file,
                                    HttpServletRequest request,
                                    HttpServletResponse resp) {
-//        crossover(request,resp);
 
         if (file.isEmpty()) {
             return new ApiResponse(ApiResponse.Status.NON_VALID_PARAM);
@@ -181,6 +182,39 @@ public class AdminController {
 
         if (!userName.equals(adminName)) {
             return new ApiResponse(ApiResponse.Status.BAD_REQUEST);
+        }
+        return null;
+    }
+
+
+    @GetMapping("/download/departments")
+    @ResponseBody
+    public String summaryExcelSDepartments(HttpServletResponse response) {
+        try {
+
+            ServiceResult<File> excelFile = excelService.summaryByDepartment();
+
+            if (!excelFile.isSuccess()) {
+                return null;
+            }
+            File result = excelFile.getResult();
+            // 以流的形式下载文件。
+            InputStream fis = new BufferedInputStream(new FileInputStream(result));
+            byte[] buffer = new byte[fis.available()];
+            fis.read(buffer);
+            fis.close();
+            // 清空response
+            response.reset();
+            response.addHeader("Content-Disposition",
+                    "attachment;filename=" + new String(result.getName().getBytes("utf-8"), "ISO-8859-1"));
+            response.addHeader("Content-Length", "" + result.length());
+            response.setContentType("application/octet-stream");
+            OutputStream os = new BufferedOutputStream(response.getOutputStream());
+            os.write(buffer);
+            os.flush();
+            os.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return null;
     }

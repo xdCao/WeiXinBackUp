@@ -2,13 +2,12 @@ package com.xdcao.weixin.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.xdcao.weixin.base.ServiceMultiRet;
 import com.xdcao.weixin.base.ServiceResult;
-import com.xdcao.weixin.bo.UserBO;
-import com.xdcao.weixin.bo.UserBOExample;
+import com.xdcao.weixin.bo.*;
+import com.xdcao.weixin.dao.ArticleBOMapper;
+import com.xdcao.weixin.dao.UserArticleBOMapper;
 import com.xdcao.weixin.dao.UserBOMapper;
-import org.apache.tomcat.jni.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +26,12 @@ public class UserServiceImpl implements IUserService {
 
     @Autowired
     private UserBOMapper userBOMapper;
+
+    @Autowired
+    private ArticleBOMapper articleBOMapper;
+
+    @Autowired
+    private UserArticleBOMapper userArticleBOMapper;
 
     @Override
     @Transactional
@@ -52,15 +57,37 @@ public class UserServiceImpl implements IUserService {
 
 
     @Override
-    public ServiceResult addScore(Integer score, String openId) {
+    @Transactional
+    public ServiceResult addScore(Integer score, String openId, Integer articleId) {
         List<UserBO> boList = getUserBOSByOpenId(openId);
         if (boList == null || boList.isEmpty()) {
             return new ServiceResult(false,"找不到该用户");
         }
         UserBO userBO = boList.get(0);
-        userBO.setTotalScore(userBO.getTotalScore()+score);
-        userBOMapper.updateByPrimaryKey(userBO);
-        return new ServiceResult(true);
+
+        ArticleBO articleBO = articleBOMapper.selectByPrimaryKey(articleId);
+        if (articleBO == null) {
+            return new ServiceResult(false,"找不到该文章");
+        }
+
+        /*看用户是否因为这篇文章得过分*/
+        UserArticleBOExample example = new UserArticleBOExample();
+        example.createCriteria().andArticleIdEqualTo(articleId).andUserIdEqualTo(userBO.getId());
+        List<UserArticleBO> userArticleBOS = userArticleBOMapper.selectByExample(example);
+        if (userArticleBOS == null || userArticleBOS.isEmpty()) {
+            userBO.setTotalScore(userBO.getTotalScore()+score);
+            userBOMapper.updateByPrimaryKey(userBO);
+            UserArticleBO userArticleBO = new UserArticleBO();
+            userArticleBO.setArticleId(articleId);
+            userArticleBO.setUserId(userBO.getId());
+            userArticleBO.setCreateTime(new Date());
+            userArticleBO.setUpdateTime(new Date());
+            userArticleBOMapper.insert(userArticleBO);
+            return new ServiceResult(true);
+        }
+
+        return new ServiceResult(true,"用户已经用这篇文章得过分");
+
     }
 
     @Override
@@ -83,6 +110,14 @@ public class UserServiceImpl implements IUserService {
             return new ServiceResult<Boolean>(false);
         }
         return new ServiceResult<>(true);
+    }
+
+    @Override
+    public List<UserBO> findUsersByDepartment(int departmentsValue) {
+        UserBOExample example = new UserBOExample();
+        example.createCriteria().andDepartmentEqualTo(departmentsValue);
+        List<UserBO> userBOS = userBOMapper.selectByExample(example);
+        return userBOS;
     }
 
 
