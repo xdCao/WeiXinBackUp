@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.google.gson.Gson;
+import com.xdcao.weixin.base.ApiResponse;
+import com.xdcao.weixin.base.OpenIdUtil;
 import com.xdcao.weixin.dao.AnswerBOMapper;
 import com.xdcao.weixin.pojo.AccessToken;
 import com.xdcao.weixin.pojo.TokenBean;
@@ -130,6 +132,17 @@ public class WeixinApplicationTests {
         String sendPost = HttpUtil.sendPost(url, paramsCrea);
         System.out.println(sendPost);
 
+    }
+
+
+    @Test
+    public void testOpenIdGet() {
+        String code = "001naB892VJI8L0jJM992vzE892naB8-";
+        String getopenid = OpenIdUtil.getopenid(appID, code, appsecret);
+        System.out.println(getopenid);
+        JSONObject jsonObject = JSONObject.parseObject(getopenid);
+        String openId=jsonObject.getString("openid");
+        System.out.println(" openId : "+ openId);
     }
 
 

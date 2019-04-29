@@ -21,8 +21,8 @@
         </commentGenerator>
         <!-- 配置数据库连接 -->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://localhost:3306/work?useSSL=false"
-                        userId="root"
+                        connectionURL="jdbc:mysql://39.107.76.182:3306/work?useSSL=false"
+                        userId="xdCao"
                         password="Ch_705083979123"/>
 
 
@@ -63,7 +63,11 @@
 <!--        </table>-->
 
 
-        <table tableName="article" domainObjectName="ArticleBO">
+<!--        <table tableName="article" domainObjectName="ArticleBO">-->
+<!--            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>-->
+<!--        </table>-->
+
+        <table tableName="user" domainObjectName="UserBO">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
 

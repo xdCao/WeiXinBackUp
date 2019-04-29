@@ -65,6 +65,10 @@ public class ApiResponse {
         this(status.getCode(), status.getMessage(), data);
     }
 
+    public ApiResponse(Status status, String message) {
+        this(status.getCode(),message,null);
+    }
+
     public ApiResponse() {
         this(Status.SUCCESS);
     }
