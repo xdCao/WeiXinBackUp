@@ -2,6 +2,7 @@ package com.xdcao.weixin.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.xdcao.weixin.base.Departments;
 import com.xdcao.weixin.base.ServiceMultiRet;
 import com.xdcao.weixin.base.ServiceResult;
 import com.xdcao.weixin.bo.*;
@@ -36,7 +37,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     @Transactional
-    public ServiceResult addNewUser(String openId, String name, int department) {
+    public ServiceResult addNewUser(String openId, String name, int department, Integer age, Integer gender, String workId) {
 
         List<UserBO> userBOList = getUserBOSByOpenId(openId);
         if (userBOList != null && !userBOList.isEmpty()) {
@@ -48,9 +49,16 @@ public class UserServiceImpl implements IUserService {
         userBO.setDepartment(department);
         userBO.setName(name);
         userBO.setOpenId(openId);
+        userBO.setAge(age);
+        userBO.setGender(gender);
         userBO.setTotalScore(0);
         userBO.setCreateTime(now);
         userBO.setUpdateTime(now);
+
+        if (workId != null && !workId.isEmpty()) {
+            userBO.setWorkId(workId);
+        }
+
         userBOMapper.insert(userBO);
         return new ServiceResult(true);
     }
@@ -133,5 +141,30 @@ public class UserServiceImpl implements IUserService {
         UserBOExample example = new UserBOExample();
         example.createCriteria().andOpenIdEqualTo(openId);
         return userBOMapper.selectByExample(example);
+    }
+
+    @Override
+    @Transactional
+    public ServiceResult updateUserByOpenId(String openId, String name, Integer department, Integer age, Integer gender, String workId) {
+
+        List<UserBO> userBOList = getUserBOSByOpenId(openId);
+        if (userBOList == null || userBOList.isEmpty()) {
+            return new ServiceResult(false, "找不到该用户");
+        }
+
+        Date now = new Date();
+        UserBO userBO = userBOList.get(0);
+        userBO.setDepartment(department);
+        userBO.setName(name);
+        userBO.setAge(age);
+        userBO.setGender(gender);
+        userBO.setUpdateTime(now);
+
+        if (workId != null && !workId.isEmpty() && userBO.getDepartment()!= Departments.OUTSIDE.getValue()) {
+            userBO.setWorkId(workId);
+        }
+
+        userBOMapper.updateByPrimaryKeySelective(userBO);
+        return new ServiceResult(true);
     }
 }

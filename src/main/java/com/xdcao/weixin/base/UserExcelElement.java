@@ -14,6 +14,12 @@ public class UserExcelElement {
 
     private String department;
 
+    private Integer gender;
+
+    private Integer age;
+
+    private String workId;
+
     public UserExcelElement() {
     }
 
@@ -39,5 +45,29 @@ public class UserExcelElement {
 
     public void setDepartment(String department) {
         this.department = department;
+    }
+
+    public Integer getGender() {
+        return gender;
+    }
+
+    public void setGender(Integer gender) {
+        this.gender = gender;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public String getWorkId() {
+        return workId;
+    }
+
+    public void setWorkId(String workId) {
+        this.workId = workId;
     }
 }

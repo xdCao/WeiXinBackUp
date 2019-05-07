@@ -97,6 +97,9 @@ public class ExcelServiceImpl implements IExcelService {
             userExcelElement.setUserName(user.getName());
             userExcelElement.setDepartment(Departments.of(user.getDepartment()).getName());
             userExcelElement.setScore(user.getTotalScore());
+            userExcelElement.setAge(user.getAge());
+            userExcelElement.setGender(user.getGender());
+            userExcelElement.setWorkId(user.getWorkId());
             userExcelElements.add(userExcelElement);
         }
 
@@ -127,6 +130,9 @@ public class ExcelServiceImpl implements IExcelService {
             UserVoteExcelElement excelElement = new UserVoteExcelElement();
             excelElement.setUserName(user.getName());
             excelElement.setDepartment(Departments.of(user.getDepartment()).getName());
+            excelElement.setAge(user.getAge());
+            excelElement.setGender(user.getGender());
+            excelElement.setWorkId(user.getWorkId());
 
             UserVoteOptionExample example = new UserVoteOptionExample();
             example.createCriteria().andVoteIdEqualTo(voteId).andUserIdEqualTo(user.getId());
@@ -159,7 +165,7 @@ public class ExcelServiceImpl implements IExcelService {
 
 
         //rowName
-        String[] rowsName = new String[]{"用户名称", "科室", "选项"};
+        String[] rowsName = new String[]{"用户名称", "科室", "选项","性别", "年龄", "工号"};
         sheet.setDefaultColumnWidth(15);//设置列默认的宽度
         HSSFRow row = null;
 
@@ -198,6 +204,24 @@ public class ExcelServiceImpl implements IExcelService {
                 optionCell.setCellValue(objsRow.getIndex());
             }
             optionCell.setCellStyle(getStyle(wb));
+
+            HSSFCell genderCell = cellsRow.createCell(3);
+            if (objsRow.getGender() == 1) {
+                genderCell.setCellValue("男");
+            } else if (objsRow.getGender() == 0) {
+                genderCell.setCellValue("女");
+            } else {
+                genderCell.setCellValue("");
+            }
+            genderCell.setCellStyle(getStyle(wb));
+
+            HSSFCell ageScoreCell = cellsRow.createCell(4);
+            ageScoreCell.setCellValue(objsRow.getAge());
+            ageScoreCell.setCellStyle(getStyle(wb));
+
+            HSSFCell workIdCell = cellsRow.createCell(5);
+            workIdCell.setCellValue(objsRow.getWorkId());
+            workIdCell.setCellStyle(getStyle(wb));
         }
 
 //            HttpServletResponse response = ServletActionContext.getResponse();
@@ -270,7 +294,7 @@ public class ExcelServiceImpl implements IExcelService {
 
 
             //rowName
-            String[] rowsName = new String[]{"用户名称", "科室", "得分"};
+            String[] rowsName = new String[]{"用户名称", "科室", "得分", "性别", "年龄", "工号"};
             sheet.setDefaultColumnWidth(15);//设置列默认的宽度
             HSSFRow row = null;
 
@@ -313,6 +337,24 @@ public class ExcelServiceImpl implements IExcelService {
                 HSSFCell totalScoreCell = cellsRow.createCell(2);
                 totalScoreCell.setCellValue(objsRow.getScore());
                 totalScoreCell.setCellStyle(getStyle(wb));
+
+                HSSFCell genderCell = cellsRow.createCell(3);
+                if (objsRow.getGender() == 1) {
+                    genderCell.setCellValue("男");
+                } else if (objsRow.getGender() == 0) {
+                    genderCell.setCellValue("女");
+                } else {
+                    genderCell.setCellValue("");
+                }
+                genderCell.setCellStyle(getStyle(wb));
+
+                HSSFCell ageScoreCell = cellsRow.createCell(4);
+                ageScoreCell.setCellValue(objsRow.getAge());
+                ageScoreCell.setCellStyle(getStyle(wb));
+
+                HSSFCell workIdCell = cellsRow.createCell(5);
+                workIdCell.setCellValue(objsRow.getWorkId());
+                workIdCell.setCellStyle(getStyle(wb));
             }
 
 //            HttpServletResponse response = ServletActionContext.getResponse();

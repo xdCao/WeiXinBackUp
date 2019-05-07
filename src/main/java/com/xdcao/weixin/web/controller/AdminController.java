@@ -1,13 +1,11 @@
 package com.xdcao.weixin.web.controller;
 
-import com.google.gson.Gson;
 import com.xdcao.weixin.base.ApiResponse;
 import com.xdcao.weixin.base.RespUtils;
 import com.xdcao.weixin.base.ServiceMultiRet;
 import com.xdcao.weixin.base.ServiceResult;
 import com.xdcao.weixin.bo.ArticleBO;
 import com.xdcao.weixin.bo.UserBO;
-import com.xdcao.weixin.bo.Vote;
 import com.xdcao.weixin.service.IArticleService;
 import com.xdcao.weixin.service.IExcelService;
 import com.xdcao.weixin.service.IUserService;
@@ -28,10 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
-
-import static com.xdcao.weixin.base.RespUtils.crossover;
 
 /**
  * @Author: buku.ch
@@ -40,7 +35,7 @@ import static com.xdcao.weixin.base.RespUtils.crossover;
 
 @Controller
 @RequestMapping("/admin")
-@CrossOrigin(origins = "*",allowCredentials="true",allowedHeaders = "*",methods = {RequestMethod.GET,RequestMethod.POST,RequestMethod.OPTIONS,RequestMethod.PUT,RequestMethod.DELETE})
+@CrossOrigin(origins = "*", allowCredentials = "true", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.DELETE})
 public class AdminController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
@@ -87,14 +82,13 @@ public class AdminController {
         }
 
         if (name.equals(adminName) && pwd.equals(adminPwd)) {
-            session.setAttribute(LOGIN_SESSION_KEY,name);
+            session.setAttribute(LOGIN_SESSION_KEY, name);
             return new ApiResponse(ApiResponse.Status.SUCCESS);
         }
 
         return new ApiResponse(ApiResponse.Status.NON_VALID_PARAM);
 
     }
-
 
 
     @GetMapping("/list/users")
@@ -110,13 +104,11 @@ public class AdminController {
             return response;
         }
 
-        ServiceMultiRet<UserBO> users = userService.listUsersByPage(start,size);
-
+        ServiceMultiRet<UserBO> users = userService.listUsersByPage(start, size);
 
 
         return new ApiResponse(users);
     }
-
 
 
     @GetMapping("/list/articles")
@@ -131,7 +123,7 @@ public class AdminController {
         if (response != null) {
             return response;
         }
-        ServiceMultiRet<ArticleBO> ret = articleService.listAllArticlesByPage(start,size);
+        ServiceMultiRet<ArticleBO> ret = articleService.listAllArticlesByPage(start, size);
         return new ApiResponse(ret);
     }
 
@@ -161,7 +153,7 @@ public class AdminController {
             return new ApiResponse(ApiResponse.Status.BAD_REQUEST);
         }
 
-        ServiceResult serviceResult = articleService.addNewArticle(content,title);
+        ServiceResult serviceResult = articleService.addNewArticle(content, title);
 
         if (serviceResult.isSuccess()) {
             return new ApiResponse(ApiResponse.Status.SUCCESS);
@@ -198,7 +190,7 @@ public class AdminController {
     @ResponseBody
     public ApiResponse addNewVote(@RequestBody VoteForm voteForm) {
 
-        if(voteForm == null) {
+        if (voteForm == null) {
             return new ApiResponse(ApiResponse.Status.BAD_REQUEST);
         }
 
@@ -220,7 +212,7 @@ public class AdminController {
             return new ApiResponse(ApiResponse.Status.SUCCESS);
         }
 
-        return new ApiResponse(ApiResponse.Status.BAD_REQUEST,result.getMessage());
+        return new ApiResponse(ApiResponse.Status.BAD_REQUEST, result.getMessage());
 
     }
 
@@ -245,7 +237,7 @@ public class AdminController {
 
     @GetMapping("/download/departments")
     @ResponseBody
-    public String summaryExcelSDepartments(HttpServletResponse response,HttpServletRequest request) {
+    public String summaryExcelSDepartments(HttpServletResponse response, HttpServletRequest request) {
         try {
 
             ServiceResult<File> excelFile = excelService.summaryByDepartment();
@@ -261,10 +253,9 @@ public class AdminController {
     }
 
 
-
     @GetMapping("/download/users")
     @ResponseBody
-    public String userExcel(HttpServletResponse response,HttpServletRequest request) {
+    public String userExcel(HttpServletResponse response, HttpServletRequest request) {
         try {
 
             ServiceResult<File> excelFile = excelService.summaryByUsers();
@@ -281,7 +272,7 @@ public class AdminController {
 
     @GetMapping("/download/votes/{voteId}")
     @ResponseBody
-    public String voteExcel(HttpServletResponse response,HttpServletRequest request,@PathVariable("voteId") Integer voteId) {
+    public String voteExcel(HttpServletResponse response, HttpServletRequest request, @PathVariable("voteId") Integer voteId) {
 
         try {
             ServiceResult<File> excelFile = excelService.summaryVotesByUsers(voteId);
@@ -289,12 +280,11 @@ public class AdminController {
                 return null;
             }
             outputFile(request, response, excelFile);
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
     }
-
 
 
     private void outputFile(HttpServletRequest request, HttpServletResponse response, ServiceResult<File> excelFile) throws IOException {
@@ -321,7 +311,7 @@ public class AdminController {
 
 
     private ApiResponse checkAdminLogin(HttpSession session) {
-        String userName = (String)session.getAttribute(LOGIN_SESSION_KEY);
+        String userName = (String) session.getAttribute(LOGIN_SESSION_KEY);
         if (userName == null || userName.isEmpty()) {
             return new ApiResponse(ApiResponse.Status.NOT_LOGIN);
         }
@@ -331,7 +321,6 @@ public class AdminController {
         }
         return null;
     }
-
 
 
 }

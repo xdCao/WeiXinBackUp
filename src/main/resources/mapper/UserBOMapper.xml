@@ -6,9 +6,12 @@
     <result column="open_id" jdbcType="VARCHAR" property="openId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="department" jdbcType="INTEGER" property="department" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_time" jdbcType="DATE" property="createTime" />
+    <result column="update_time" jdbcType="DATE" property="updateTime" />
     <result column="total_score" jdbcType="INTEGER" property="totalScore" />
+    <result column="work_id" jdbcType="VARCHAR" property="workId" />
+    <result column="age" jdbcType="INTEGER" property="age" />
+    <result column="gender" jdbcType="INTEGER" property="gender" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -69,7 +72,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, open_id, name, department, create_time, update_time, total_score
+    id, open_id, name, department, create_time, update_time, total_score, work_id, age, 
+    gender
   </sql>
   <select id="selectByExample" parameterType="com.xdcao.weixin.bo.UserBOExample" resultMap="BaseResultMap">
     select
@@ -101,15 +105,17 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.xdcao.weixin.bo.UserBO">
+  <insert id="insert" parameterType="com.xdcao.weixin.bo.UserBO" useGeneratedKeys="true">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into user (open_id, name, department, 
-      create_time, update_time, total_score
+      create_time, update_time, total_score, 
+      work_id, age, gender
       )
     values (#{openId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{department,jdbcType=INTEGER}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{totalScore,jdbcType=INTEGER}
+      #{createTime,jdbcType=DATE}, #{updateTime,jdbcType=DATE}, #{totalScore,jdbcType=INTEGER}, 
+      #{workId,jdbcType=VARCHAR}, #{age,jdbcType=INTEGER}, #{gender,jdbcType=INTEGER}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.xdcao.weixin.bo.UserBO">
@@ -136,6 +142,15 @@
       <if test="totalScore != null">
         total_score,
       </if>
+      <if test="workId != null">
+        work_id,
+      </if>
+      <if test="age != null">
+        age,
+      </if>
+      <if test="gender != null">
+        gender,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="openId != null">
@@ -148,13 +163,22 @@
         #{department,jdbcType=INTEGER},
       </if>
       <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
+        #{createTime,jdbcType=DATE},
       </if>
       <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
+        #{updateTime,jdbcType=DATE},
       </if>
       <if test="totalScore != null">
         #{totalScore,jdbcType=INTEGER},
+      </if>
+      <if test="workId != null">
+        #{workId,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null">
+        #{age,jdbcType=INTEGER},
+      </if>
+      <if test="gender != null">
+        #{gender,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -180,13 +204,22 @@
         department = #{record.department,jdbcType=INTEGER},
       </if>
       <if test="record.createTime != null">
-        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+        create_time = #{record.createTime,jdbcType=DATE},
       </if>
       <if test="record.updateTime != null">
-        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+        update_time = #{record.updateTime,jdbcType=DATE},
       </if>
       <if test="record.totalScore != null">
         total_score = #{record.totalScore,jdbcType=INTEGER},
+      </if>
+      <if test="record.workId != null">
+        work_id = #{record.workId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.age != null">
+        age = #{record.age,jdbcType=INTEGER},
+      </if>
+      <if test="record.gender != null">
+        gender = #{record.gender,jdbcType=INTEGER},
       </if>
     </set>
     <if test="_parameter != null">
@@ -199,9 +232,12 @@
       open_id = #{record.openId,jdbcType=VARCHAR},
       name = #{record.name,jdbcType=VARCHAR},
       department = #{record.department,jdbcType=INTEGER},
-      create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-      total_score = #{record.totalScore,jdbcType=INTEGER}
+      create_time = #{record.createTime,jdbcType=DATE},
+      update_time = #{record.updateTime,jdbcType=DATE},
+      total_score = #{record.totalScore,jdbcType=INTEGER},
+      work_id = #{record.workId,jdbcType=VARCHAR},
+      age = #{record.age,jdbcType=INTEGER},
+      gender = #{record.gender,jdbcType=INTEGER}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -219,13 +255,22 @@
         department = #{department,jdbcType=INTEGER},
       </if>
       <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
+        create_time = #{createTime,jdbcType=DATE},
       </if>
       <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
+        update_time = #{updateTime,jdbcType=DATE},
       </if>
       <if test="totalScore != null">
         total_score = #{totalScore,jdbcType=INTEGER},
+      </if>
+      <if test="workId != null">
+        work_id = #{workId,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null">
+        age = #{age,jdbcType=INTEGER},
+      </if>
+      <if test="gender != null">
+        gender = #{gender,jdbcType=INTEGER},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -235,9 +280,12 @@
     set open_id = #{openId,jdbcType=VARCHAR},
       name = #{name,jdbcType=VARCHAR},
       department = #{department,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      total_score = #{totalScore,jdbcType=INTEGER}
+      create_time = #{createTime,jdbcType=DATE},
+      update_time = #{updateTime,jdbcType=DATE},
+      total_score = #{totalScore,jdbcType=INTEGER},
+      work_id = #{workId,jdbcType=VARCHAR},
+      age = #{age,jdbcType=INTEGER},
+      gender = #{gender,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

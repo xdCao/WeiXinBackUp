@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface IUserService {
 
-    ServiceResult addNewUser(String openId, String name, int department);
+    ServiceResult addNewUser(String openId, String name, int department, Integer age, Integer gender, String workId);
 
     ServiceResult addScore(Integer score, String openId, Integer articleId);
 
@@ -28,4 +28,5 @@ public interface IUserService {
 
     List<UserBO> getUserBOSByOpenId(String openId);
 
+    ServiceResult updateUserByOpenId(String openId, String name, Integer department, Integer age, Integer gender, String workId);
 }

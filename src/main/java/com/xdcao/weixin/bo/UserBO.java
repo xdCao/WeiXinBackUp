@@ -17,6 +17,12 @@ public class UserBO {
 
     private Integer totalScore;
 
+    private String workId;
+
+    private Integer age;
+
+    private Integer gender;
+
     public Integer getId() {
         return id;
     }
@@ -71,5 +77,29 @@ public class UserBO {
 
     public void setTotalScore(Integer totalScore) {
         this.totalScore = totalScore;
+    }
+
+    public String getWorkId() {
+        return workId;
+    }
+
+    public void setWorkId(String workId) {
+        this.workId = workId == null ? null : workId.trim();
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public Integer getGender() {
+        return gender;
+    }
+
+    public void setGender(Integer gender) {
+        this.gender = gender;
     }
 }

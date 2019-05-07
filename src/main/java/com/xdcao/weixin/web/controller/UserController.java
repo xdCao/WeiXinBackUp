@@ -1,7 +1,9 @@
 package com.xdcao.weixin.web.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.xdcao.weixin.base.*;
+import com.xdcao.weixin.bo.UserBO;
 import com.xdcao.weixin.service.IUserService;
 import com.xdcao.weixin.service.IVoteService;
 import com.xdcao.weixin.web.dto.DepartmentPair;
@@ -61,12 +63,68 @@ public class UserController {
         }
     }
 
+    @GetMapping("/get")
+    @ResponseBody
+    public ApiResponse getUser(@RequestParam("open_id") String openId) {
+
+        if (openId == null || openId.isEmpty()) {
+            return new ApiResponse(ApiResponse.Status.BAD_REQUEST);
+        }
+
+        List<UserBO> userBOSByOpenId = userService.getUserBOSByOpenId(openId);
+        if (userBOSByOpenId == null || userBOSByOpenId.isEmpty()) {
+            return new ApiResponse(ApiResponse.Status.BAD_REQUEST);
+        }
+        return new ApiResponse(userBOSByOpenId.get(0));
+    }
+
+    @PostMapping("/update")
+    @ResponseBody
+    public ApiResponse updateUser(@RequestParam("open_id") String openId,
+                                  @RequestParam("name") String name,
+                                  @RequestParam("department") Integer department,
+                                  @RequestParam("age") Integer age,
+                                  @RequestParam("gender") Integer gender,
+                                  @RequestParam(value = "work_id", required = false) String workId) {
+        if (openId == null || openId.isEmpty()) {
+            return new ApiResponse(ApiResponse.Status.BAD_REQUEST);
+        }
+
+        if (name == null || name.isEmpty()) {
+            return new ApiResponse(ApiResponse.Status.BAD_REQUEST);
+        }
+
+        if (Departments.of(department).getValue() == Departments.OTHERS.getValue()) {
+            return new ApiResponse(ApiResponse.Status.BAD_REQUEST);
+        }
+
+        if (age == null || age <= 0) {
+            return new ApiResponse(ApiResponse.Status.BAD_REQUEST);
+        }
+
+        if (gender == null || gender < 0 || gender > 1) {
+            return new ApiResponse(ApiResponse.Status.BAD_REQUEST);
+        }
+
+        ServiceResult ret = userService.updateUserByOpenId(openId,name,department,age,gender,workId);
+
+        if (ret.isSuccess()) {
+            return new ApiResponse(ApiResponse.Status.SUCCESS);
+        }
+
+        return new ApiResponse(ApiResponse.Status.BAD_REQUEST,ret.getMessage());
+
+    }
+
 
     @PostMapping("/register")
     @ResponseBody
     public ApiResponse register(@RequestParam("open_id") String openId,
                                 @RequestParam("name") String name,
                                 @RequestParam("department") Integer department,
+                                @RequestParam("age") Integer age,
+                                @RequestParam("gender") Integer gender,
+                                @RequestParam(value = "work_id", required = false) String workId,
                                 HttpServletRequest request,
                                 HttpServletResponse resp) {
 
@@ -84,7 +142,15 @@ public class UserController {
             return new ApiResponse(ApiResponse.Status.BAD_REQUEST);
         }
 
-        ServiceResult ret = userService.addNewUser(openId,name,department);
+        if (age == null || age <= 0) {
+            return new ApiResponse(ApiResponse.Status.BAD_REQUEST);
+        }
+
+        if (gender == null || gender < 0 || gender > 1) {
+            return new ApiResponse(ApiResponse.Status.BAD_REQUEST);
+        }
+
+        ServiceResult ret = userService.addNewUser(openId,name,department,age,gender,workId);
 
         if (ret.isSuccess()) {
             return new ApiResponse(ApiResponse.Status.SUCCESS);
