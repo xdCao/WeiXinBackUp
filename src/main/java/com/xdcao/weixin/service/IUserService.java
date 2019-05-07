@@ -23,4 +23,9 @@ public interface IUserService {
     ServiceResult<Boolean> checkUser(String openId);
 
     List<UserBO> findUsersByDepartment(int departmentsValue);
+
+    List<UserBO> findAllUsers();
+
+    List<UserBO> getUserBOSByOpenId(String openId);
+
 }

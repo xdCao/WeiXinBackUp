@@ -14,4 +14,8 @@ public interface IExcelService {
 
     ServiceResult<File> summaryByDepartment();
 
+    ServiceResult<File> summaryByUsers();
+
+    ServiceResult<File> summaryVotesByUsers(Integer voteId);
+
 }

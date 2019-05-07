@@ -72,7 +72,19 @@
 <!--        </table>-->
 
 
-        <table tableName="user_article" domainObjectName="UserArticleBO">
+<!--        <table tableName="user_article" domainObjectName="UserArticleBO">-->
+<!--            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>-->
+<!--        </table>-->
+
+<!--        <table tableName="vote" domainObjectName="Vote">-->
+<!--            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>-->
+<!--        </table>-->
+
+<!--        <table tableName="vote_option" domainObjectName="VoteOption">-->
+<!--            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>-->
+<!--        </table>-->
+
+        <table tableName="user_vote_option" domainObjectName="UserVoteOption">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
 

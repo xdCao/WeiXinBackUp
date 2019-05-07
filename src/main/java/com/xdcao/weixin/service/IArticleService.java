@@ -15,4 +15,6 @@ public interface IArticleService {
     ServiceResult addNewArticle(String content, String title);
 
     ServiceMultiRet<ArticleBO> listAllArticlesByPage(Integer start, Integer size);
+
+    ServiceResult deleteArticle(Integer articleId);
 }

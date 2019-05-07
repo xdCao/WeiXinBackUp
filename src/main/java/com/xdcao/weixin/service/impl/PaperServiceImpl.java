@@ -1,4 +1,4 @@
-package com.xdcao.weixin.service;
+package com.xdcao.weixin.service.impl;
 
 import com.xdcao.weixin.base.ServiceResult;
 import com.xdcao.weixin.bo.AnswerBO;
@@ -7,6 +7,7 @@ import com.xdcao.weixin.bo.QuestionBO;
 import com.xdcao.weixin.dao.AnswerBOMapper;
 import com.xdcao.weixin.dao.PaperBOMapper;
 import com.xdcao.weixin.dao.QuestionBOMapper;
+import com.xdcao.weixin.service.IPaperService;
 import com.xdcao.weixin.web.form.PaperForm;
 import com.xdcao.weixin.web.dto.OptionDTO;
 import com.xdcao.weixin.web.dto.QuestionDTO;

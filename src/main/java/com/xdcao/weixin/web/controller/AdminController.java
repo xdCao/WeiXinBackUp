@@ -1,13 +1,20 @@
 package com.xdcao.weixin.web.controller;
 
+import com.google.gson.Gson;
 import com.xdcao.weixin.base.ApiResponse;
+import com.xdcao.weixin.base.RespUtils;
 import com.xdcao.weixin.base.ServiceMultiRet;
 import com.xdcao.weixin.base.ServiceResult;
 import com.xdcao.weixin.bo.ArticleBO;
 import com.xdcao.weixin.bo.UserBO;
+import com.xdcao.weixin.bo.Vote;
 import com.xdcao.weixin.service.IArticleService;
 import com.xdcao.weixin.service.IExcelService;
 import com.xdcao.weixin.service.IUserService;
+import com.xdcao.weixin.service.IVoteService;
+import com.xdcao.weixin.web.VoteOptionPair;
+import com.xdcao.weixin.web.dto.VoteDTO;
+import com.xdcao.weixin.web.form.VoteForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +28,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.xdcao.weixin.base.RespUtils.crossover;
 
@@ -52,6 +61,9 @@ public class AdminController {
 
     @Autowired
     private IExcelService excelService;
+
+    @Autowired
+    private IVoteService voteService;
 
     @Value("${admin.name}")
     private String adminName;
@@ -123,6 +135,16 @@ public class AdminController {
         return new ApiResponse(ret);
     }
 
+    @PostMapping("/delete/article")
+    @ResponseBody
+    public ApiResponse deleteArticle(@RequestParam("article_id") Integer articleId) {
+        ServiceResult result = articleService.deleteArticle(articleId);
+        if (result.isSuccess()) {
+            return new ApiResponse(ApiResponse.Status.SUCCESS);
+        }
+        return new ApiResponse(ApiResponse.Status.BAD_REQUEST);
+    }
+
 
     @PostMapping("/add/article")
     @ResponseBody
@@ -172,6 +194,130 @@ public class AdminController {
         return new ApiResponse(site_prefix + "static/" + fileName);
     }
 
+    @PostMapping("/add/vote")
+    @ResponseBody
+    public ApiResponse addNewVote(@RequestBody VoteForm voteForm) {
+
+        if(voteForm == null) {
+            return new ApiResponse(ApiResponse.Status.BAD_REQUEST);
+        }
+
+        String voteTitle = voteForm.getTitle();
+        List<VoteOptionPair> optionPairs = voteForm.getOptionPairs();
+
+
+        if (voteTitle == null || voteTitle.isEmpty()) {
+            return new ApiResponse(ApiResponse.Status.BAD_REQUEST);
+        }
+
+        if (optionPairs == null || optionPairs.isEmpty()) {
+            return new ApiResponse(ApiResponse.Status.BAD_REQUEST);
+        }
+
+        ServiceResult result = voteService.addNewVote(voteTitle, optionPairs);
+
+        if (result.isSuccess()) {
+            return new ApiResponse(ApiResponse.Status.SUCCESS);
+        }
+
+        return new ApiResponse(ApiResponse.Status.BAD_REQUEST,result.getMessage());
+
+    }
+
+    @PostMapping("/delete/vote")
+    @ResponseBody
+    public ApiResponse deleteVote(@RequestParam("vote_id") Integer voteId) {
+        ServiceResult result = voteService.deleteVote(voteId);
+        if (result.isSuccess()) {
+            return new ApiResponse(ApiResponse.Status.SUCCESS);
+        }
+        return new ApiResponse(ApiResponse.Status.BAD_REQUEST);
+    }
+
+
+    @GetMapping("/list/votes")
+    @ResponseBody
+    public ApiResponse listVotesAndOptions() {
+        ServiceMultiRet<VoteDTO> votes = voteService.listAllVotes();
+        return new ApiResponse(votes.getResult());
+    }
+
+
+    @GetMapping("/download/departments")
+    @ResponseBody
+    public String summaryExcelSDepartments(HttpServletResponse response,HttpServletRequest request) {
+        try {
+
+            ServiceResult<File> excelFile = excelService.summaryByDepartment();
+
+            if (!excelFile.isSuccess()) {
+                return null;
+            }
+            outputFile(request, response, excelFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+
+    @GetMapping("/download/users")
+    @ResponseBody
+    public String userExcel(HttpServletResponse response,HttpServletRequest request) {
+        try {
+
+            ServiceResult<File> excelFile = excelService.summaryByUsers();
+
+            if (!excelFile.isSuccess()) {
+                return null;
+            }
+            outputFile(request, response, excelFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @GetMapping("/download/votes/{voteId}")
+    @ResponseBody
+    public String voteExcel(HttpServletResponse response,HttpServletRequest request,@PathVariable("voteId") Integer voteId) {
+
+        try {
+            ServiceResult<File> excelFile = excelService.summaryVotesByUsers(voteId);
+            if (!excelFile.isSuccess()) {
+                return null;
+            }
+            outputFile(request, response, excelFile);
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+
+    private void outputFile(HttpServletRequest request, HttpServletResponse response, ServiceResult<File> excelFile) throws IOException {
+        File result = excelFile.getResult();
+        // 以流的形式下载文件。
+        InputStream fis = new BufferedInputStream(new FileInputStream(result));
+        byte[] buffer = new byte[fis.available()];
+        fis.read(buffer);
+        fis.close();
+        // 清空response
+        response.reset();
+
+        RespUtils.crossover(request, response);
+
+        response.addHeader("Content-Disposition",
+                "attachment;filename=" + new String(result.getName().getBytes("utf-8"), "ISO-8859-1"));
+        response.addHeader("Content-Length", "" + result.length());
+        response.setContentType("application/octet-stream");
+        OutputStream os = new BufferedOutputStream(response.getOutputStream());
+        os.write(buffer);
+        os.flush();
+        os.close();
+    }
 
 
     private ApiResponse checkAdminLogin(HttpSession session) {
@@ -185,40 +331,6 @@ public class AdminController {
         }
         return null;
     }
-
-
-    @GetMapping("/download/departments")
-    @ResponseBody
-    public String summaryExcelSDepartments(HttpServletResponse response) {
-        try {
-
-            ServiceResult<File> excelFile = excelService.summaryByDepartment();
-
-            if (!excelFile.isSuccess()) {
-                return null;
-            }
-            File result = excelFile.getResult();
-            // 以流的形式下载文件。
-            InputStream fis = new BufferedInputStream(new FileInputStream(result));
-            byte[] buffer = new byte[fis.available()];
-            fis.read(buffer);
-            fis.close();
-            // 清空response
-            response.reset();
-            response.addHeader("Content-Disposition",
-                    "attachment;filename=" + new String(result.getName().getBytes("utf-8"), "ISO-8859-1"));
-            response.addHeader("Content-Length", "" + result.length());
-            response.setContentType("application/octet-stream");
-            OutputStream os = new BufferedOutputStream(response.getOutputStream());
-            os.write(buffer);
-            os.flush();
-            os.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
 
 
 

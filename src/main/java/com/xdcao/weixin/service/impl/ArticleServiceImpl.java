@@ -1,4 +1,4 @@
-package com.xdcao.weixin.service;
+package com.xdcao.weixin.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -7,6 +7,7 @@ import com.xdcao.weixin.base.ServiceResult;
 import com.xdcao.weixin.bo.ArticleBO;
 import com.xdcao.weixin.bo.ArticleBOExample;
 import com.xdcao.weixin.dao.ArticleBOMapper;
+import com.xdcao.weixin.service.IArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,5 +58,12 @@ public class ArticleServiceImpl implements IArticleService {
         ret.addAll(pageInfo.getList());
         return new ServiceMultiRet<>(pageInfo.getTotal(), ret);
 
+    }
+
+    @Override
+    @Transactional
+    public ServiceResult deleteArticle(Integer articleId) {
+        articleBOMapper.deleteByPrimaryKey(articleId);
+        return new ServiceResult(true);
     }
 }

@@ -1,4 +1,4 @@
-package com.xdcao.weixin.service;
+package com.xdcao.weixin.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -8,6 +8,7 @@ import com.xdcao.weixin.bo.*;
 import com.xdcao.weixin.dao.ArticleBOMapper;
 import com.xdcao.weixin.dao.UserArticleBOMapper;
 import com.xdcao.weixin.dao.UserBOMapper;
+import com.xdcao.weixin.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -120,8 +121,15 @@ public class UserServiceImpl implements IUserService {
         return userBOS;
     }
 
+    @Override
+    public List<UserBO> findAllUsers() {
+        List<UserBO> userBOS = userBOMapper.selectByExample(new UserBOExample());
+        return userBOS;
+    }
 
-    private List<UserBO> getUserBOSByOpenId(String openId) {
+
+    @Override
+    public List<UserBO> getUserBOSByOpenId(String openId) {
         UserBOExample example = new UserBOExample();
         example.createCriteria().andOpenIdEqualTo(openId);
         return userBOMapper.selectByExample(example);
