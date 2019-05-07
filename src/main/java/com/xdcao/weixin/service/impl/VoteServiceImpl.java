@@ -114,7 +114,7 @@ public class VoteServiceImpl implements IVoteService {
 
         UserBO userBO = userBOSByOpenId.get(0);
         UserVoteOptionExample example = new UserVoteOptionExample();
-        example.createCriteria().andUserIdEqualTo(userBO.getId()).andVoteOptionIdEqualTo(voteOptionId);
+        example.createCriteria().andUserIdEqualTo(userBO.getId()).andVoteIdEqualTo(voteOption.getVoteId());
         List<UserVoteOption> userVoteOptions = userVoteOptionMapper.selectByExample(example);
 
         if (userVoteOptions == null || userVoteOptions.isEmpty()) {
